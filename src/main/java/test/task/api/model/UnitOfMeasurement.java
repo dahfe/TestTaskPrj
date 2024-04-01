@@ -12,14 +12,13 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "roles")
-public class Role  {
-
+@Table(name = "unit_of_measurement")
+public class UnitOfMeasurement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "role", nullable = false, unique = true)
-    private String name;
+    @Column(name = "unit", nullable = false, unique = true)
+    private String unit;
 }

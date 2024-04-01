@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.File;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -27,17 +27,19 @@ public class Item {
     @Column(name = "item_name", nullable = false)
     private String itemName;
 
-    @Column(name = "item_group", nullable = false)
-    private String itemGroup;
+    @ManyToOne
+    @JoinColumn(name = "item_group_id", nullable = false, referencedColumnName = "id")
+    private ItemGroup itemGroup;
 
-    @Column(name = "unit_of_measurement", nullable = false)
-    private String unitOfMeasurement;
+    @ManyToOne
+    @JoinColumn(name = "unit_of_measurement_id", referencedColumnName = "id")
+    private UnitOfMeasurement unitOfMeasurement;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price_without_VAT", nullable = false)
-    private double UAH;
+    @Column(name = "price_without_VAT", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal priceWithoutVAT;
 
     @Column(name = "status", nullable = false, columnDefinition = "TEXT")
     private String status;

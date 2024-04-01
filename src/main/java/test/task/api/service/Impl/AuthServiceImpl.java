@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
             throw new ModelExistsException("Username already taken");
         }
         User user = new User();
-        user.setRoles(roleRepository.findByName("EMPLOYEE"));
+        user.setRoles(roleRepository.findByName("ROLE_EMPLOYEE"));
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);

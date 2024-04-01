@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -30,14 +31,15 @@ public class TMARequestRow {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
-    @Column(name = "unit_of_measurement", nullable = false)
-    private String unitOfMeasurement;
+    @ManyToOne
+    @JoinColumn(name = "unit_of_measurement_id", referencedColumnName = "id")
+    private UnitOfMeasurement unitOfMeasurement;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price_without_VAT", nullable = false)
-    private double priceWithoutVAT;
+    @Column(name = "price_without_VAT", nullable = false, columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal priceWithoutVAT;
 
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;

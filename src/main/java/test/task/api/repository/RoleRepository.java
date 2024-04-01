@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import test.task.api.model.Role;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
