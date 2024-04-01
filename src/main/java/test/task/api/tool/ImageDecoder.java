@@ -1,4 +1,4 @@
-package test.task.api.Tools;
+package test.task.api.tool;
 
 import java.util.Base64;
 

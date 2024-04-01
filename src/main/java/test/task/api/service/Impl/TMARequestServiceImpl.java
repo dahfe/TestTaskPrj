@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import test.task.api.Tools.RandomHashGenerator;
+import test.task.api.tool.RandomHashGenerator;
 import test.task.api.dto.entityDto.TMARequestDto;
 import test.task.api.exception.ModelExistsException;
 import test.task.api.model.*;
