@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import test.task.api.config.ImageDecoder;
+import test.task.api.Tools.ImageDecoder;
 import test.task.api.dto.entityDto.ItemDto;
 import test.task.api.exception.ModelExistsException;
 import test.task.api.model.Item;
@@ -22,12 +22,13 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
+
     private final ItemRepository itemRepository;
     private final ItemGroupRepository itemGroupRepository;
     private final UnitOfMeasurementRepository unitOfMeasurementRepository;
     @Override
     public void createItem(ItemDto itemDto) throws IOException {
-        if(itemRepository.findByItemName(itemDto.getItemName()) != null){
+        if(itemRepository.findByItemName(itemDto.getItemName()).isPresent()){
             throw new ModelExistsException("Item already taken");
         }
         Item item = new Item();
@@ -38,11 +39,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void updateItem(String itemName, ItemDto itemDto) throws IOException {
-        if(itemRepository.findByItemName(itemName).getItemName() == null){
+        if(itemRepository.findByItemName(itemName).isEmpty()){
             throw new ModelExistsException(
                     String.format(("Item %S does not exist"), itemDto.getItemName()));
         }
-        Item item = itemRepository.findByItemName(itemName);
+        Item item = itemRepository.findByItemName(itemName).orElseThrow();
         settingItem(itemDto, item);
         item.setStatus(Status.UPDATED.toString());
         itemRepository.save(item);
@@ -50,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItemByItemName(String name) {
-        itemRepository.delete(itemRepository.findByItemName(name));
+        itemRepository.delete(itemRepository.findByItemName(name).orElseThrow());
     }
 
     @Override
@@ -86,8 +87,8 @@ public class ItemServiceImpl implements ItemService {
 
     private void settingItem(ItemDto itemDto, Item item) throws IOException {
         item.setItemName(itemDto.getItemName());
-        item.setItemGroup(itemGroupRepository.findByType(itemDto.getItemGroup()));
-        item.setUnitOfMeasurement(unitOfMeasurementRepository.findByUnit(itemDto.getUnitOfMeasurement()));
+        item.setItemGroup(itemGroupRepository.findByType(itemDto.getItemGroup()).orElseThrow());
+        item.setUnitOfMeasurement(unitOfMeasurementRepository.findByUnit(itemDto.getUnitOfMeasurement()).orElseThrow());
         item.setQuantity(itemDto.getQuantity());
         item.setPriceWithoutVAT(itemDto.getPriceWithoutVAT());
         item.setStorageLocation(itemDto.getStorageLocation());

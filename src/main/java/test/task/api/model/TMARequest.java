@@ -23,8 +23,9 @@ public class TMARequest {
     @Column(name = "id", nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "employee_name")
-    private String employeeName;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private User employee;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -46,6 +47,6 @@ public class TMARequest {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "request_row_id", nullable = false, unique = true)
-    private Long requestRowId;
+    @Column(name = "request_row_id", nullable = false)
+    private String requestRowId;
 }
