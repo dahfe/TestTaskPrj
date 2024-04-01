@@ -20,11 +20,16 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/items")
-    public ResponseEntity<List<Item>> getFilteredItems(@RequestBody(required = false) @Valid FilterDto filterDto) {
-        if(filterDto == null){
-            return new ResponseEntity<>(itemService.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<Item>> getItems(@RequestBody(required = false) @Valid FilterDto filterDto,
+                                               @RequestParam(required = false) String sortBy) {
+        List<Item> items = itemService.getAll();
+        if (sortBy != null) {
+            items = itemService.getAllItemsSorted(sortBy);
         }
-        return new ResponseEntity<>(itemService.filterItems(filterDto.getField(), filterDto.getValue()), HttpStatus.OK);
+        if(filterDto == null){
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(itemService.filterItems(filterDto.getField(), filterDto.getValue(), items), HttpStatus.OK);
     }
     @PostMapping("/items/create")
     public ResponseEntity createItem(@RequestBody @Valid ItemDto itemDto) throws IOException {

@@ -2,6 +2,7 @@ package test.task.api.service.Impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import test.task.api.config.ImageDecoder;
 import test.task.api.dto.entityDto.ItemDto;
@@ -53,8 +54,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> filterItems(String field, Object value) {
-        List<Item> items = itemRepository.findAll();
+    public List<Item> filterItems(String field, Object value, List<Item> items) {
+
         List<Item> filteredItems = items.stream()
                 .filter(item -> {
                     switch (field){
@@ -71,6 +72,11 @@ public class ItemServiceImpl implements ItemService {
                     }
                 }).toList();
     return filteredItems;
+    }
+
+    @Override
+    public List<Item> getAllItemsSorted(String sortBy) {
+        return itemRepository.findAll(Sort.by(sortBy)).stream().toList();
     }
 
     @Override
