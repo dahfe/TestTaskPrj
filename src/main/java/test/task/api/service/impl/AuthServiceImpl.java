@@ -1,4 +1,4 @@
-package test.task.api.service.Impl;
+package test.task.api.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-    private void authenticate(String username, String password){
+    void authenticate(String username, String password){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {

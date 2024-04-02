@@ -1,4 +1,4 @@
-package test.task.api.service.Impl;
+package test.task.api.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,5 +95,4 @@ public class ItemServiceImpl implements ItemService {
         item.setContactPerson(itemDto.getContactPerson());
         item.setPhoto(ImageDecoder.decodeBase64Image(itemDto.getPhoto()));
     }
-
 }

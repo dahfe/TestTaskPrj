@@ -1,4 +1,4 @@
-package test.task.api.service.Impl;
+package test.task.api.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,30 +50,38 @@ public class TMARequestServiceImpl implements TMARequestService {
     @Override
     public void changeRequestStatus(UUID requestId, String newStatus) {
         Optional<TMARequest> tmaRequestOptional = tmaRequestRepository.findById(requestId);
-        if(tmaRequestOptional.isPresent()){
+        if(tmaRequestOptional.isPresent()) {
             TMARequest tmaRequest = tmaRequestOptional.get();
 
-            Item tmaRequestitem = tmaRequest.getItem();
-            Item item = itemRepository.findById(tmaRequestitem.getId()).orElseThrow();
-
-            if(item.getQuantity() < tmaRequest.getQuantity()){
-                tmaRequest.setStatus(Status.REJECT_REQUEST.toString());
-                tmaRequestRepository.save(tmaRequest);
-                throw new ModelExistsException("Request error");
+            Item tmaRequestItem = tmaRequest.getItem();
+            if (tmaRequestItem == null) {
+                throw new ModelExistsException("Item does not exist");
             }
+            Optional<Item> optionalItem = itemRepository.findById(tmaRequestItem.getId());
+            if (optionalItem.isPresent()) {
+                Item item = optionalItem.get();
 
-            item.setQuantity(item.getQuantity() - tmaRequest.getQuantity());
-
-            switch (newStatus){
-                case "APPROVE":
-                    tmaRequest.setStatus(Status.APPROVE.toString());
-                    break;
-                case "REJECT_REQUEST":
+                if (item.getQuantity() < tmaRequest.getQuantity()) {
                     tmaRequest.setStatus(Status.REJECT_REQUEST.toString());
-                    break;
+                    tmaRequestRepository.save(tmaRequest);
+                    throw new ModelExistsException("Request error");
+                }
+
+                item.setQuantity(item.getQuantity() - tmaRequest.getQuantity());
+
+                switch (newStatus) {
+                    case "APPROVE":
+                        tmaRequest.setStatus(Status.APPROVE.toString());
+                        break;
+                    case "REJECT_REQUEST":
+                        tmaRequest.setStatus(Status.REJECT_REQUEST.toString());
+                        break;
+                }
+                tmaRequestRepository.save(tmaRequest);
+                itemRepository.save(item);
             }
-            tmaRequestRepository.save(tmaRequest);
-            itemRepository.save(item);
+        } else {
+            throw new ModelExistsException("Item does not exist in the database");
         }
     }
 
@@ -110,7 +118,9 @@ public class TMARequestServiceImpl implements TMARequestService {
                         case "unitOfMeasurement": return tmaRequest.getUnitOfMeasurement().getUnit().equals(value.toString());
                         case "quantity": return tmaRequest.getQuantity() == (int) value;
                         case "priceWithoutVAT": return tmaRequest.getPriceWithoutVAT().equals(value);
-                        case "status": return tmaRequest.getStatus().equals(value.toString());
+                        case "status":
+                            String status = tmaRequest.getStatus();
+                            return status != null && status.equals(value.toString());
                         case "requestRowId": return tmaRequest.getRequestRowId().equals(value.toString());
                         default: return false;
 
